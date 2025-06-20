@@ -58,7 +58,7 @@
         alert('Transaction completed by ' + details.payer.name.given_name);
 
         // Optionally redirect to a success view in Django
-        window.location.href = "{% url 'payment_success' %}";
+        window.location.href = "{% url 'confirm_payment' %}";
       });
     }
   }).render('#paypal-button-container');

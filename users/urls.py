@@ -18,6 +18,8 @@ urlpatterns = [
     path('checkout/',views.checkout_view, name='checkout'),
     path('payment/', views.paypal_payment, name='paypal_payment'),
     path('payment/success/', views.payment_success, name='payment_success'),
+    path('payment/confirm/', views.confirm_payment, name='confirm_payment'),
+
     path('orders/', views.order_history, name='order_history'),
     path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
 

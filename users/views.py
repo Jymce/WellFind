@@ -249,16 +249,24 @@ def paypal_payment(request):
     return render(request, 'users/payment_simulation.html')
 
 @login_required
-def payment_success(request):
-    cart_items = CartItem.objects.filter(user=request.user)
+def confirm_payment(request):
+    request.session['paid'] = True
+    return redirect('payment_success')
 
+@login_required
+def payment_success(request):
+    if not request.session.get('paid'):
+        return redirect('checkout')
+
+    del request.session['paid']  # clean up session
+
+    cart_items = CartItem.objects.filter(user=request.user)
     if not cart_items.exists():
-        return redirect('home')  # nothing to process
+        return redirect('home')
 
     total = sum(item.product.price * item.quantity for item in cart_items)
     address = request.user.userprofile.address
 
-    # 1. Create Order record
     order = Order.objects.create(
         user=request.user,
         address=address,
@@ -266,19 +274,18 @@ def payment_success(request):
         is_paid=True
     )
 
-    # 2. Create individual OrderItems and reduce product stock
     for item in cart_items:
         OrderItem.objects.create(
             order=order,
             product=item.product,
             quantity=item.quantity,
-            price=item.product.price  # snapshot at time of order
+            price=item.product.price
         )
         item.product.quantity -= item.quantity
         item.product.save()
 
-    # 3. Clear cart
     cart_items.delete()
+    print("🚀 Reached payment_success")
 
     return render(request, 'users/payment_success.html', {'order': order})
 
@@ -304,6 +311,7 @@ def order_history(request):
     paginator = Paginator(orders, 5)
     page_number = request.GET.get('page')
     paginated_orders = paginator.get_page(page_number)
+    print("Orders for user:", Order.objects.filter(user=request.user))
 
     return render(request, 'users/order_history.html', {
         'orders': paginated_orders,
