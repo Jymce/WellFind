@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow mt-10 text-center">
+  <h2 class="text-2xl font-bold text-gray-800 mb-4">PayPal Sandbox</h2>
+  <p class="mb-4 text-gray-600">Simulate a successful transaction below:</p>
+
+  <form method="POST" action="{% url 'payment_success' %}">
+    {% csrf_token %}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+      Simulate Successful Payment
+    </button>
+  </form>
+</div>
+{% endblock %}

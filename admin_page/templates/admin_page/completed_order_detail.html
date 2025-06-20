@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold text-[#5A827E] mb-6">Order #{{ order.id }} Details</h2>
+
+<div class="bg-white p-6 rounded shadow space-y-4">
+  <p><strong>User:</strong> {{ order.user.username }}</p>
+  <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y - h:i A" }}</p>
+  <p><strong>Total:</strong> ₱{{ order.total_amount|floatformat:2 }}</p>
+  <p><strong>Address:</strong> {{ order.address }}</p>
+
+  <hr class="my-4" />
+
+  <h3 class="text-lg font-semibold mb-2">Items:</h3>
+  <ul class="list-disc ml-6 text-sm space-y-1">
+    {% for item in order.items.all %}
+      <li>{{ item.product.name }} × {{ item.quantity }} – ₱{{ item.price|floatformat:2 }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<!-- Return Button -->
+<div class="mt-6">
+  <a href="{% url 'completed_orders' %}" class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded shadow-sm transition">
+    ← Return to Completed Orders
+  </a>
+</div>
+{% endblock %}

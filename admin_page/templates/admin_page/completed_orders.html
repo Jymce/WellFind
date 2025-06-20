@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold text-[#5A827E] mb-6">Completed Orders</h2>
+
+<!-- Filters -->
+<form method="GET" class="flex flex-wrap items-end gap-4 mb-6">
+  <div>
+    <label class="text-sm text-gray-600">Username</label>
+    <input type="text" name="username" value="{{ username }}" placeholder="e.g. johndoe"
+           class="mt-1 block w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#84AE92]" />
+  </div>
+  <div>
+    <label class="text-sm text-gray-600">Date</label>
+    <input type="date" name="date" value="{{ date }}"
+           class="mt-1 block w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-[#84AE92]" />
+  </div>
+  <div>
+    <button type="submit" class="bg-[#84AE92] hover:bg-[#5A827E] cursor-pointer text-white px-5 py-2 rounded transition">
+      Filter
+    </button>
+  </div>
+</form>
+
+<!-- Table -->
+<div class="overflow-x-auto">
+  <table class="w-full bg-white border border-gray-200 rounded-lg shadow-sm text-sm">
+    <thead class="bg-[#5A827E] text-white">
+      <tr>
+        <th class="text-left px-4 py-3 font-semibold">Order ID</th>
+        <th class="text-left px-4 py-3 font-semibold">User</th>
+        <th class="text-left px-4 py-3 font-semibold">Date</th>
+        <th class="text-left px-4 py-3 font-semibold">Total</th>
+        <th class="text-left px-4 py-3 font-semibold">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr class="border-t hover:bg-gray-50">
+        <td class="px-4 py-2 text-gray-800">#{{ order.id }}</td>
+        <td class="px-4 py-2">{{ order.user.username }}</td>
+        <td class="px-4 py-2">{{ order.created_at|date:"M d, Y - h:i A" }}</td>
+        <td class="px-4 py-2">₱{{ order.total_amount|floatformat:2 }}</td>
+        <td class="px-4 py-2">
+          <a href="{% url 'completed_order_detail' order.id %}"
+             class="text-sm text-white bg-[#5A827E] cursor-pointer hover:bg-[#3D5E58] px-3 py-1 rounded transition">
+            More Details
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="px-4 py-6 text-center text-gray-500">No completed orders found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+{% if orders.has_other_pages %}
+  <div class="flex justify-center mt-6 space-x-2">
+    {% if orders.has_previous %}
+      <a href="?page={{ orders.previous_page_number }}&username={{ username }}&date={{ date }}"
+         class="px-3 py-1 rounded cursor-pointer border text-sm text-gray-700 hover:bg-gray-100">
+        ← Prev
+      </a>
+    {% endif %}
+
+    <span class="px-3 py-1 rounded border bg-gray-100 text-sm text-gray-800">
+      Page {{ orders.number }} of {{ orders.paginator.num_pages }}
+    </span>
+
+    {% if orders.has_next %}
+      <a href="?page={{ orders.next_page_number }}&username={{ username }}&date={{ date }}"
+         class="px-3 py-1 rounded border cursor-pointer text-sm text-gray-700 hover:bg-gray-100">
+        Next →
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

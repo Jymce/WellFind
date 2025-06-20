@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex justify-between items-center flex-wrap gap-2 mb-4">
+  <h2 class="text-xl font-semibold">Manage Products</h2>
+  <a href="{% url 'add_product' %}" class="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700 transition">
+    + Add Product
+  </a>
+</div>
+
+<!-- Search & Filter Form -->
+<form method="get" class="grid sm:flex gap-2 mb-4 items-center">
+  <input
+    type="text"
+    name="q"
+    value="{{ q }}"
+    placeholder="Search by name"
+    class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+  />
+
+  <select
+    name="type"
+    class="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+  >
+    <option value="">All Types</option>
+    {% for t in types %}
+      <option value="{{ t }}" {% if type == t %}selected{% endif %}>{{ t|capfirst }}</option>
+    {% endfor %}
+  </select>
+
+  <label class="inline-flex items-center space-x-1 text-sm">
+    <input
+      type="checkbox"
+      name="featured"
+      value="1"
+      {% if featured == '1' %}checked{% endif %}
+      class="rounded"
+    />
+    <span>Featured Only</span>
+  </label>
+
+  <input type="hidden" name="sort" value="{{ sort }}">
+  <input type="hidden" name="dir" value="{{ dir }}">
+
+  <button
+    type="submit"
+    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm"
+  >
+    Search
+  </button>
+</form>
+
+
+<!-- Product Table -->
+<div class="overflow-x-auto rounded-md border border-gray-200">
+  <table class="min-w-full text-sm text-gray-700">
+    <thead class="bg-gray-50 text-left text-gray-500 uppercase text-xs">
+      <tr>
+        <th class="p-3 font-medium">Image</th>
+        <th class="p-3 font-medium">
+        <a href="?sort=name&dir={% if sort == 'name' and dir == 'asc' %}desc{% else %}asc{% endif %}{% if q %}&q={{ q }}{% endif %}{% if type %}&type={{ type }}{% endif %}" class="hover:underline">
+          Name
+          {% if sort == 'name' %}
+            {% if dir == 'asc' %}▲{% else %}▼{% endif %}
+          {% endif %}
+        </a>
+        </th>
+        <th class="p-3 font-medium">Type</th>
+        <th class="p-3 font-medium">
+        <a href="?sort=price&dir={% if sort == 'price' and dir == 'asc' %}desc{% else %}asc{% endif %}{% if q %}&q={{ q }}{% endif %}{% if type %}&type={{ type }}{% endif %}" class="hover:underline">
+          Price
+          {% if sort == 'price' %}
+            {% if dir == 'asc' %}▲{% else %}▼{% endif %}
+          {% endif %}
+        </a>
+        </th>
+        <th class="p-3 font-medium">
+  <a href="?sort=quantity&dir={% if sort == 'quantity' and dir == 'asc' %}desc{% else %}asc{% endif %}{% if q %}&q={{ q }}{% endif %}{% if type %}&type={{ type }}{% endif %}" class="hover:underline">
+    Quantity
+    {% if sort == 'quantity' %}
+      {% if dir == 'asc' %}▲{% else %}▼{% endif %}
+    {% endif %}
+  </a>
+</th>
+
+        <th class="p-3 font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for product in products %}
+        <tr class="hover:bg-gray-50">
+          <td class="p-3">
+            {% if product.product_image %}
+              <img src="{{ product.product_image.url }}" alt="{{ product.name }}" class="h-12 w-12 object-cover rounded" />
+            {% else %}
+              <span class="text-gray-400">No Image</span>
+            {% endif %}
+          </td>
+<td class="p-3">
+  {{ product.name }}
+  {% if product.is_featured %}
+    <span class="ml-1 text-yellow-500 text-sm">★</span>
+  {% endif %}
+</td>
+          <td class="p-3">{{ product.product_type|capfirst }}</td>
+          <td class="p-3">₱{{ product.price }}</td>
+          <td class="p-3">{{ product.quantity }}</td>
+          <td class="p-3 space-x-2">
+            <a href="{% url 'edit_product' product.pk %}" class="text-blue-500 hover:underline">Edit</a>
+            <a href="{% url 'delete_product' product.pk %}" class="text-red-500 hover:underline">Delete</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6" class="p-3 text-center text-gray-400">No products found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="flex justify-center items-center mt-6 gap-2 text-sm">
+  {% if products.has_previous %}
+    <a href="?page={{ products.previous_page_number }}&sort={{ sort }}&dir={{ dir }}{% if q %}&q={{ q }}{% endif %}{% if type %}&type={{ type }}{% endif %}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Previous</a>
+  {% endif %}
+  <span>Page {{ products.number }} of {{ products.paginator.num_pages }}</span>
+  {% if products.has_next %}
+    <a href="?page={{ products.next_page_number }}&sort={{ sort }}&dir={{ dir }}{% if q %}&q={{ q }}{% endif %}{% if type %}&type={{ type }}{% endif %}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Next</a>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="flex items-center justify-center min-h-[calc(90vh-4rem)]">
+  <div class="bg-white p-6 sm:p-10 rounded shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-[#5A827E] text-center">Login to Your Account</h2>
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      {% if messages %}
+        <div class="bg-red-100 border border-red-200 text-red-700 px-4 py-2 rounded text-sm">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div>
+        <label class="block font-semibold">Username</label>
+        <input type="text" name="username" required
+               class="w-full px-4 py-2 border rounded focus:ring focus:ring-[#B9D4AA]" />
+      </div>
+
+      <div class="relative">
+        <label class="block font-semibold">Password</label>
+        <input type="password" id="password" name="password" required
+               class="w-full px-4 py-2 border rounded focus:ring focus:ring-[#B9D4AA] pr-10" />
+        <button type="button" onclick="togglePassword('password', this)"
+                class="absolute right-3 top-9 text-gray-400 hover:text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" id="eye-icon" class="h-5 w-5" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19
+                  c-4.478 0-8.268-2.943-9.542-7a10.05 10.05 0 013.308-4.568M9.88 9.88
+                  a3 3 0 104.24 4.24M3 3l18 18" />
+          </svg>
+        </button>
+        <p class="text-sm text-gray-500 mt-2">
+  <a href="{% url 'password_reset' %}" class="text-[#5A827E] underline">Forgot password?</a>
+</p>
+
+      </div>
+
+      <button class="w-full bg-[#84AE92] hover:bg-[#5A827E] text-white py-2 rounded transition duration-150">Login</button>
+    </form>
+    <p class="text-sm mt-4 text-center">Don't have an account?
+      <a href="{% url 'register' %}" class="text-[#5A827E] font-medium">Register here</a>
+    </p>
+
+    
+  </div>
+</div>
+
+<script>
+function togglePassword(id, button) {
+  const input = document.getElementById(id);
+  const isHidden = input.type === "password";
+  input.type = isHidden ? "text" : "password";
+
+  const svg = button.querySelector("svg");
+  svg.innerHTML = isHidden
+    ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.522 5 12 5
+              c4.478 0 8.268 2.943 9.542 7
+              -1.274 4.057-5.064 7-9.542 7
+              -4.478 0-8.268-2.943-9.542-7z" />`
+    : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.875 18.825A10.05 10.05 0 0112 19
+              c-4.478 0-8.268-2.943-9.542-7
+              a10.05 10.05 0 013.308-4.568M9.88 9.88
+              a3 3 0 104.24 4.24M3 3l18 18" />`;
+}
+</script>
+{% endblock %}

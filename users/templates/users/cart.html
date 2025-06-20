@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
+
+{% if cart_items %}
+  <div class="space-y-4">
+    {% for item in cart_items %}
+      <div class="flex flex-col sm:flex-row justify-between border p-4 rounded-lg shadow-sm bg-white gap-4">
+
+        <!-- Product Info -->
+        <div class="flex gap-4 w-full">
+          {% if item.product.product_image %}
+            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}"
+                 class="w-32 h-32 object-cover rounded-md shadow-sm">
+          {% else %}
+            <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded text-gray-500 text-sm">No Image</div>
+          {% endif %}
+          <div class="flex flex-col justify-between">
+            <h3 class="font-semibold text-gray-800 text-base sm:text-lg">{{ item.product.name }}</h3>
+            <p class="text-sm text-gray-500">₱{{ item.product.price }} each</p>
+            <p class="text-xs text-gray-400">Stock: {{ item.product.quantity }}</p>
+          </div>
+        </div>
+
+        <!-- Quantity & Actions -->
+        <div class="flex flex-col-reverse sm:flex-col sm:items-end justify-between w-full sm:w-auto gap-4 text-right">
+
+          <!-- Price & Remove -->
+          <div>
+            <div class="text-green-600 font-bold text-lg">₱{{ item.total_price }}</div>
+            <button
+              type="button"
+              onclick="showRemoveModal('{{ item.id }}')"
+              class="mt-1 text-red-600 cursor-pointer hover:underline text-sm"
+            >
+              Remove
+            </button>
+          </div>
+
+          <!-- Quantity Update Form -->
+          <form method="POST" action="{% url 'update_cart_quantity' item.id %}" class="flex justify-end gap-2">
+            {% csrf_token %}
+            <input
+              type="number"
+              name="quantity"
+              min="1"
+              max="{{ item.product.quantity }}"
+              value="{{ item.quantity }}"
+              required
+              class="w-20 border rounded p-1 text-sm text-center"
+            />
+            <button
+              type="submit"
+              class="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+            >
+              Update
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Remove Confirmation Modal -->
+      <div id="remove-modal-{{ item.id }}"
+           class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 text-center">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">Remove Item</h3>
+          <p class="text-sm text-gray-600 mb-4">Are you sure you want to remove <strong>{{ item.product.name }}</strong> from your cart?</p>
+          <div class="flex justify-center gap-4">
+            <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+              {% csrf_token %}
+              <button type="submit" class="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 py-2 rounded">Yes, Remove</button>
+            </form>
+            <button
+              type="button"
+              onclick="hideRemoveModal('{{ item.id }}')"
+              class="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+    {% endfor %}
+  </div>
+
+  <!-- Cart Total & Checkout -->
+  <div class="mt-8 flex flex-col sm:flex-row justify-between items-center border-t pt-4 gap-4">
+    <a href="{% url 'product_listing' %}" class="text-sm text-blue-600 hover:underline">← Continue Shopping</a>
+    <div class="text-right w-full sm:w-auto">
+      <p class="text-xl font-semibold text-blue-700">Total: ₱{{ grand_total }}</p>
+      <form method="GET" action="{% url 'checkout' %}">
+        <button type="submit" class="mt-3 bg-green-600 cursor-pointer hover:bg-green-700 text-white px-6 py-2 rounded-lg w-full sm:w-auto">
+          Proceed to Checkout
+        </button>
+      </form>
+    </div>
+  </div>
+
+{% else %}
+  <div class="text-center text-gray-500 mt-10">
+    <p class="text-lg">🛒 Your cart is empty.</p>
+    <a href="{% url 'product_listing' %}" class="mt-3 inline-block text-blue-600 hover:underline">Browse products</a>
+  </div>
+{% endif %}
+
+<!-- Modal Toggle Script -->
+<script>
+  function showRemoveModal(id) {
+    const modal = document.getElementById(`remove-modal-${id}`);
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
+  }
+
+  function hideRemoveModal(id) {
+    const modal = document.getElementById(`remove-modal-${id}`);
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+  }
+</script>
+
+{% endblock %}

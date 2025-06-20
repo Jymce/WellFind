@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold text-[#5A827E] mb-6">Orders by {{ viewed_user.username }}</h2>
+
+<div class="space-y-4">
+  {% for order in orders %}
+  <div class="bg-white p-4 rounded shadow text-sm">
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y - h:i A" }}</p>
+    <p><strong>Total:</strong> ₱{{ order.total_amount }}</p>
+    <p><strong>Address:</strong> {{ order.address }}</p>
+    <hr class="my-2">
+    <p class="font-semibold">Items:</p>
+    <ul class="list-disc ml-6 text-sm">
+      {% for item in order.items.all %}
+      <li>{{ item.product.name }} × {{ item.quantity }} — ₱{{ item.price }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% empty %}
+    <p class="text-gray-600">No orders for this user.</p>
+  {% endfor %}
+</div>
+
+<div class="mt-6">
+  <a href="{% url 'user_detail' viewed_user.id %}"
+     class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded shadow-sm">
+    ← Back to User Details
+  </a>
+</div>
+{% endblock %}

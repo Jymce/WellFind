@@ -1,0 +1,7 @@
+<div>
+  {% if widget.is_initial %}
+    <!-- Optional: Preview the current image without showing the path -->
+    <img src="{{ widget.value.url }}" alt="Current image" class="w-24 h-24 object-cover rounded mb-2">
+  {% endif %}
+  <input type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+</div>

@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load dict_filters %}
+
+<!-- Header -->
+<div class="text-center py-10">
+  <h1 class="text-3xl font-bold text-gray-800">All Products</h1>
+  <p class="text-gray-600 mt-2">Browse through our complete catalog</p>
+</div>
+
+<!-- Filter/Search Bar -->
+<form method="get" class="flex flex-wrap justify-center gap-2 mb-6">
+  <!-- Product Type Filter -->
+  <select name="type" class="border rounded px-3 py-2">
+    <option value="">All Types</option>
+    {% for type in all_types %}
+      <option value="{{ type }}" {% if type == selected_type %}selected{% endif %}>{{ type|capfirst }}</option>
+    {% endfor %}
+  </select>
+
+  <!-- Search Bar -->
+  <input
+    type="text"
+    name="q"
+    placeholder="Search product name..."
+    value="{{ query }}"
+    class="border rounded px-3 py-2"
+  />
+
+  <!-- Submit Button -->
+  <button type="submit" class="bg-[#5A827E] cursor-pointer text-white px-4 py-2 rounded hover:bg-[#46665f]">
+    Filter
+  </button>
+</form>
+
+<!-- Product Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-12">
+  {% for product in products %}
+    <div 
+      class="bg-white border rounded-lg shadow hover:shadow-md transition text-sm cursor-pointer"
+      onclick="openModal('{{ product.id }}')"
+    >
+      <div class="overflow-hidden rounded-t-lg">
+        {% if product.product_image %}
+          <img src="{{ product.product_image.url }}" alt="{{ product.name }}"
+               class="aspect-square w-full object-cover rounded-t-lg">
+        {% else %}
+          <div class="aspect-square bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+        {% endif %}
+      </div>
+      <div class="p-3">
+        <h3 class="font-semibold truncate text-gray-800">{{ product.name }}</h3>
+        <p class="text-xs text-gray-500 truncate">{{ product.product_type|capfirst }}</p>
+        <p class="text-green-600 font-bold text-sm mt-1">₱{{ product.price }}</p>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div 
+      id="modal-{{ product.id }}" 
+      class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div class="relative w-11/12 max-w-md p-6 rounded-2xl bg-white shadow-xl ring-1 ring-gray-300/40 transition-all duration-300 ease-out scale-100 opacity-100">
+        {% if product.product_image %}
+          <div class="w-full mb-4">
+            <img src="{{ product.product_image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-md shadow" />
+          </div>
+        {% endif %}
+
+        <h2 class="text-lg font-bold mb-2">{{ product.name }}</h2>
+        <p class="text-sm text-gray-600 mb-1">Type: {{ product.product_type|capfirst }}</p>
+        <p class="text-sm text-gray-600 mb-1">Description: {{ product.description|default:"No description." }}</p>
+        <p class="text-sm text-gray-600 mb-1">Price: ₱{{ product.price }}</p>
+        <p class="text-sm text-gray-600 mb-3">Stock Left: {{ product.quantity }}</p>
+
+        <form method="POST" action="{% url 'add_to_cart' product.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+          <div>
+            <p id="warning-{{ product.id }}" class="text-red-600 text-sm mb-2 hidden">
+              Quantity exceeds available stock.
+            </p>
+            <input
+              type="number"
+              name="quantity"
+              min="1"
+              required
+              class="w-full border p-2 rounded"
+              placeholder="Enter quantity"
+              oninput="validateQuantity(this, {{ product.quantity }}, {{ cart_quantities|get_item:product.id|default:0 }}, '{{ product.id }}')"
+            />
+          </div>
+
+          {% if error_product_id == product.id %}
+            <p class="text-sm text-red-600 mt-1">{{ error_message }}</p>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                openModal('{{ product.id }}');
+              });
+            </script>
+          {% endif %}
+
+          <button
+            type="submit"
+            class="mt-3 bg-[#5A827E] cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-[#46665f] w-full transition"
+          >
+            Add to Cart
+          </button>
+
+          <button
+            type="button"
+            onclick="closeModal('{{ product.id }}')"
+            class="mt-2 bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg w-full transition"
+          >
+            Return
+          </button>
+
+        </form>
+      </div>
+    </div>
+
+  {% empty %}
+    <p class="col-span-full text-center text-gray-500 italic">No products available at the moment.</p>
+  {% endfor %}
+</div>
+<!-- Pagination Controls -->
+<div class="flex justify-center items-center space-x-2 mb-10">
+  {% if products.has_previous %}
+    <a href="?page={{ products.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+       class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+      Previous
+    </a>
+  {% endif %}
+
+  <span class="px-4 py-1 bg-gray-100 text-gray-800 rounded">
+    Page {{ products.number }} of {{ products.paginator.num_pages }}
+  </span>
+
+  {% if products.has_next %}
+    <a href="?page={{ products.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+       class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+      Next
+    </a>
+  {% endif %}
+</div>
+
+<!-- JavaScript -->
+<script>
+  function openModal(id) {
+    const modal = document.getElementById(`modal-${id}`);
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    modal.classList.add('opacity-100', 'pointer-events-auto');
+  }
+
+  function closeModal(id) {
+    const modal = document.getElementById(`modal-${id}`);
+    modal.classList.remove('opacity-100', 'pointer-events-auto');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+  }
+
+  function validateQuantity(input, maxQty, existingQty, productId) {
+    const warning = document.getElementById(`warning-${productId}`);
+    const currentQty = parseInt(input.value, 10) || 0;
+
+    if (currentQty < 1) {
+      warning.classList.add('hidden');
+      input.setCustomValidity("Please enter a valid quantity.");
+    } else if (currentQty + existingQty > maxQty) {
+      warning.textContent = `Cart already has ${existingQty}. Adding ${currentQty} exceeds stock of ${maxQty}.`;
+      warning.classList.remove('hidden');
+      input.setCustomValidity("Quantity exceeds available stock.");
+    } else {
+      warning.classList.add('hidden');
+      input.setCustomValidity("");
+    }
+  }
+</script>
+
+{% endblock %}

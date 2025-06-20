@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center mb-8">
+  <h1 class="text-3xl font-bold text-[#5A827E]">Welcome to the Admin Dashboard</h1>
+  <p class="text-gray-600 mt-2">Manage your store efficiently</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+  <!-- Manage Orders -->
+  <a href="{% url 'completed_orders' %}" class="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition group">
+    <div class="text-[#5A827E] text-4xl mb-3">
+      🧾
+    </div>
+    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Orders</h2>
+    <p class="text-sm text-gray-500 mt-1">View and process customer orders.</p>
+  </a>
+
+  <!-- Manage Products -->
+  <a href="{% url 'product_list' %}"  class="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition group">
+    <div class="text-[#5A827E] text-4xl mb-3">
+      📦
+    </div>
+    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Products</h2>
+    <p class="text-sm text-gray-500 mt-1">Add, edit, or remove store products.</p>
+  </a>
+
+  <!-- Manage Users -->
+  <a href="{% url 'manage_users' %}" class="bg-white shadow-md rounded-xl cursor-pointer p-6 hover:shadow-lg transition group">
+    <div class="text-[#5A827E] text-4xl mb-3">
+      👥
+    </div>
+    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Users</h2>
+    <p class="text-sm text-gray-500 mt-1">View and manage user accounts.</p>
+  </a>
+</div>
+{% endblock %}
