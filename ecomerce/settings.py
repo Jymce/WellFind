@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bqs2=bn%##g$ytmqrub&ah+&k+)-ai)@7b@j(s@23gu7+@umwp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# DEBUG = False
 
-ALLOWED_HOSTS = ['fureverstore.pythonanywhere.com']
+# ALLOWED_HOSTS = ['fureverstore.pythonanywhere.com']
 
-# DEBUG = True
-# ALLOWED_HOSTS = []
+DEBUG = True
+ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
@@ -159,7 +159,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'FurEver Support <jymcebrian@gmail.com>'
+DEFAULT_FROM_EMAIL = f"FurEver Support <{config('EMAIL_HOST_USER')}>"
 PAYPAL_SANDBOX_CLIENT_ID = config('PAYPAL_SANDBOX_CLIENT_ID')
 
 TIME_ZONE = 'Asia/Manila'
