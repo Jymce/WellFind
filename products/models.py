@@ -6,11 +6,11 @@ from django.dispatch import receiver
 
 class Product(models.Model):
     PRODUCT_TYPES = [
-        ('Cream', 'Cream'),
-        ('Medecine', 'Medecine'),
-        ('Food', 'Food'),
+        ('Skincare', 'Skincare'),
+        ('Suplemnts', 'Suplements'),
+        ('Snacks', 'Snacks'),
         ('Accessories', 'Accessories'),
-        ('Other', 'Other'),
+
     ]
 
     name = models.CharField(max_length=255)

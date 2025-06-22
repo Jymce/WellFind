@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>{% block title %}FurEver{% endblock %}</title>
+  <title>{% block title %}WellFind{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
@@ -16,113 +16,234 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+    .gradient-bg {
+      background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 50%, #f0fdfa 100%);
+    }
+    .floating-menu {
+      transform: translateY(-10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .floating-menu.show {
+      transform: translateY(0);
+    }
   </style>
 </head>
-<body class="bg-[#f9fafb] text-gray-800 fade-in relative">
+<body class="gradient-bg text-gray-800 fade-in min-h-screen">
 
-<!-- Responsive Navbar with Hamburger Menu -->
-<nav class="bg-[#5A827E] shadow relative z-50">
+<!-- Navigation -->
+<nav class="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100 sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between h-16 items-center">
-      <div class="flex items-center gap-4">
-        <a href="" class="text-white font-bold text-xl">FurEver</a>
-        {% if user.is_authenticated %}
-          <span class="text-white text-sm sm:text-base font-medium">
-            Welcome, {% if user.is_superuser %}Admin{% else %}{{ user.username|title }}{% endif %}
+    <div class="flex justify-between items-center h-16">
+      
+      <!-- Logo & Welcome -->
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2">
+          <img src="{% static 'images/logo.png' %}" alt="">
+          <span class="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            WellFind
           </span>
+        </div>
+        {% if user.is_authenticated %}
+          <div class="hidden sm:block">
+            <span class="text-sm text-emerald-700 font-medium">
+              Welcome, {% if user.is_superuser %}Admin{% else %}{{ user.username|title }}{% endif %}
+            </span>
+          </div>
         {% endif %}
       </div>
 
-      <!-- Hamburger Button -->
-      <button id="menu-toggle" class="text-white md:hidden focus:outline-none">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden relative">
+        <button id="menu-toggle" class="p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors focus:outline-none">
+          <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
+        <!-- Floating Mobile Menu -->
+        <div id="mobile-menu" class="floating-menu absolute top-full right-0 mt-2 w-64 bg-white/95 backdrop-blur-md shadow-xl border border-emerald-100 rounded-xl hidden opacity-0 z-50">
+          <div class="p-4 space-y-1">
+            {% if user.is_authenticated %}
+              <div class="px-3 py-2 text-sm text-emerald-700 font-medium border-b border-emerald-100 mb-3">
+                <div class="flex items-center space-x-2">
+                  <div class="w-6 h-6 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                  </div>
+                  <span>{% if user.is_superuser %}Admin{% else %}{{ user.username|title }}{% endif %}</span>
+                </div>
+              </div>
+              {% if user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                  <span>Dashboard</span>
+                </a>
+                <a href="{% url 'product_list' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  <span>Products</span>
+                </a>
+                <a href="{% url 'completed_orders' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  </svg>
+                  <span>Orders</span>
+                </a>
+                <a href="{% url 'manage_users' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                  </svg>
+                  <span>Users</span>
+                </a>
+              {% else %}
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                  </svg>
+                  <span>Home</span>
+                </a>
+                <a href="{% url 'product_listing' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  <span>Products</span>
+                </a>
+                <a href="{% url 'cart' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                  </svg>
+                  <span>Cart</span>
+                </a>
+                <a href="{% url 'order_history' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span>History</span>
+                </a>
+              {% endif %}
+              <div class="border-t border-emerald-100 mt-3 pt-3">
+                <a href="{% url 'logout' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                  </svg>
+                  <span>Logout</span>
+                </a>
+              </div>
+            {% else %}
+              <a href="{% url 'login' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <span>Login</span>
+              </a>
+              <a href="{% url 'register' %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                </svg>
+                <span>Register</span>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-2">
+      <div class="hidden md:flex items-center space-x-1">
         {% if user.is_authenticated %}
           {% if user.is_superuser %}
-            <a href="{% url 'admin_dashboard' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Dashboard</a>
-            <a href="{% url 'product_list' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Products</a>
-            <a href="{% url 'completed_orders' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Orders</a>
-            <a href="{% url 'manage_users' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Users</a>
+            <a href="{% url 'admin_dashboard' %}" class="inline-flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+              <span>Dashboard</span>
+            </a>
+            <a href="{% url 'product_list' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">Products</a>
+            <a href="{% url 'completed_orders' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">Orders</a>
+            <a href="{% url 'manage_users' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">Users</a>
           {% else %}
-            <a href="{% url 'home' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Home</a>
-            <a href="{% url 'product_listing' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Products</a>
-            <a href="{% url 'cart' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">Cart</a>
-            <a href="{% url 'order_history' %}" class="px-3 py-1 rounded-full text-sm text-white hover:bg-white/20 transition">History</a>
+            <a href="{% url 'home' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">Home</a>
+            <a href="{% url 'product_listing' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">Products</a>
+            <a href="{% url 'cart' %}" class="inline-flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+              </svg>
+              <span>Cart</span>
+            </a>
+            <a href="{% url 'order_history' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-all duration-200">History</a>
           {% endif %}
-          <a href="{% url 'logout' %}" class="ml-2 px-3 py-1 rounded-full text-sm bg-red-500 hover:bg-red-600 text-white transition">Logout</a>
+          <a href="{% url 'logout' %}" class="ml-3 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">Logout</a>
         {% else %}
-          <a href="{% url 'login' %}" class="px-3 py-1 rounded-full text-sm bg-white/20 text-white hover:bg-white/30 transition">Login</a>
-          <a href="{% url 'register' %}" class="px-3 py-1 rounded-full text-sm bg-white/20 text-white hover:bg-white/30 transition">Register</a>
+          <a href="{% url 'login' %}" class="px-3 py-2 rounded-lg text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all duration-200">Login</a>
+          <a href="{% url 'register' %}" class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">Register</a>
         {% endif %}
       </div>
     </div>
   </div>
-
-  <!-- Mobile Dropdown Menu -->
-  <div id="mobile-menu" class="md:hidden absolute top-16 right-4 w-48 bg-white/90 backdrop-blur-sm shadow-lg rounded-md px-4 py-3 space-y-2 hidden opacity-0 transition-opacity duration-300 z-40">
-    {% if user.is_authenticated %}
-      {% if user.is_superuser %}
-        <a href="{% url 'admin_dashboard' %}" class="block text-[#5A827E] hover:underline">Dashboard</a>
-        <a href="{% url 'product_list' %}" class="block text-[#5A827E] hover:underline">Products</a>
-        <a href="{% url 'completed_orders' %}" class="block text-[#5A827E] hover:underline">Orders</a>
-        <a href="{% url 'manage_users' %}" class="block text-[#5A827E] hover:underline">Users</a>
-      {% else %}
-        <a href="{% url 'home' %}" class="block text-[#5A827E] hover:underline">Home</a>
-        <a href="{% url 'product_listing' %}" class="block text-[#5A827E] hover:underline">Products</a>
-        <a href="{% url 'cart' %}" class="block text-[#5A827E] hover:underline">Cart</a>
-        <a href="{% url 'order_history' %}" class="block text-[#5A827E] hover:underline">History</a>
-      {% endif %}
-      <a href="{% url 'logout' %}" class="block text-red-600 hover:underline">Logout</a>
-    {% else %}
-      <a href="{% url 'login' %}" class="block text-[#5A827E] hover:underline">Login</a>
-      <a href="{% url 'register' %}" class="block text-[#5A827E] hover:underline">Register</a>
-    {% endif %}
-  </div>
 </nav>
 
-<!-- Page Content -->
-<main class="max-w-3xl mx-auto p-4 sm:p-6">
+<!-- Main Content -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
   {% block content %}{% endblock %}
 </main>
 
-<!-- Mobile Toggle Script -->
+<!-- Mobile Menu Script -->
 <script>
   const toggle = document.getElementById('menu-toggle');
   const menu = document.getElementById('mobile-menu');
+  const menuIcon = document.getElementById('menu-icon');
+  const closeIcon = document.getElementById('close-icon');
 
-  toggle.addEventListener('click', () => {
+  toggle.addEventListener('click', (e) => {
+    e.stopPropagation();
     if (menu.classList.contains('hidden')) {
       menu.classList.remove('hidden');
-      setTimeout(() => menu.classList.remove('opacity-0'), 10);
+      setTimeout(() => {
+        menu.classList.remove('opacity-0');
+        menu.classList.add('show');
+      }, 10);
+      menuIcon.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
     } else {
       menu.classList.add('opacity-0');
-      menu.addEventListener('transitionend', () => {
+      menu.classList.remove('show');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      setTimeout(() => {
         menu.classList.add('hidden');
-      }, { once: true });
+      }, 300);
     }
   });
 
+  // Close menu when clicking outside
   document.addEventListener('click', (e) => {
-    const isClickInside = toggle.contains(e.target) || menu.contains(e.target);
-    if (!isClickInside && !menu.classList.contains('hidden')) {
+    if (!toggle.contains(e.target) && !menu.contains(e.target) && !menu.classList.contains('hidden')) {
       menu.classList.add('opacity-0');
-      menu.addEventListener('transitionend', () => {
+      menu.classList.remove('show');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      setTimeout(() => {
         menu.classList.add('hidden');
-      }, { once: true });
+      }, 300);
     }
   });
 
+  // Close menu when clicking on links
   document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
       menu.classList.add('opacity-0');
-      menu.addEventListener('transitionend', () => {
+      menu.classList.remove('show');
+      menuIcon.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      setTimeout(() => {
         menu.classList.add('hidden');
-      }, { once: true });
+      }, 300);
     });
   });
 </script>

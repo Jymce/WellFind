@@ -1,123 +1,320 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2 class="text-3xl font-bold mb-6 text-gray-800">Your Cart</h2>
+<!-- Header Section -->
+<div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl shadow-sm mb-8">
+  <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5"></div>
+  <div class="relative px-4 sm:px-8 py-8 sm:py-12">
+    <div class="flex items-center justify-center sm:justify-start">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl mr-4">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+        </svg>
+      </div>
+      <div class="text-center sm:text-left">
+        <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+          Your Cart
+        </h1>
+        {% if cart_items %}
+          <p class="text-emerald-600 text-sm sm:text-base mt-1">
+            {{ cart_items|length }} item{{ cart_items|length|pluralize }} in your wellness journey
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 
 {% if cart_items %}
-  <div class="space-y-4">
+  <!-- Cart Items -->
+  <div class="space-y-4 sm:space-y-6 mb-8">
     {% for item in cart_items %}
-      <div class="flex flex-col sm:flex-row justify-between border p-4 rounded-lg shadow-sm bg-white gap-4">
+      <div class="bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+        
+        <!-- Mobile Layout -->
+        <div class="block sm:hidden">
+          <div class="p-4 space-y-4">
+            <!-- Product Image and Basic Info -->
+            <div class="flex gap-3">
+              {% if item.product.product_image %}
+                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}"
+                     class="w-20 h-20 object-cover rounded-xl shadow-sm flex-shrink-0">
+              {% else %}
+                <div class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center rounded-xl flex-shrink-0">
+                  <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-emerald-800 text-sm truncate">{{ item.product.name }}</h3>
+                <p class="text-xs text-emerald-600 mt-1">₱{{ item.product.price }} each</p>
+                <div class="flex items-center mt-1">
+                  <svg class="w-3 h-3 text-emerald-500 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  <span class="text-xs text-emerald-500">{{ item.product.quantity }} in stock</span>
+                </div>
+              </div>
+            </div>
 
-        <!-- Product Info -->
-        <div class="flex gap-4 w-full">
-          {% if item.product.product_image %}
-            <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}"
-                 class="w-32 h-32 object-cover rounded-md shadow-sm">
-          {% else %}
-            <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded text-gray-500 text-sm">No Image</div>
-          {% endif %}
-          <div class="flex flex-col justify-between">
-            <h3 class="font-semibold text-gray-800 text-base sm:text-lg">{{ item.product.name }}</h3>
-            <p class="text-sm text-gray-500">₱{{ item.product.price }} each</p>
-            <p class="text-xs text-gray-400">Stock: {{ item.product.quantity }}</p>
+            <!-- Quantity and Price -->
+            <div class="flex items-center justify-between">
+              <form method="POST" action="{% url 'update_cart_quantity' item.id %}" class="flex items-center gap-2">
+                {% csrf_token %}
+                <label class="text-xs font-medium text-emerald-700">Qty:</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  max="{{ item.product.quantity }}"
+                  value="{{ item.quantity }}"
+                  required
+                  class="w-16 border border-emerald-200 rounded-lg p-1 text-sm text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                <button
+                  type="submit"
+                  class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition-all duration-200"
+                >
+                  Update
+                </button>
+              </form>
+              <div class="text-right">
+                <div class="text-emerald-700 font-bold text-lg">₱{{ item.total_price }}</div>
+              </div>
+            </div>
+
+            <!-- Remove Button -->
+            <div class="flex justify-end">
+              <button
+                type="button"
+                onclick="showRemoveModal('{{ item.id }}')"
+                class="text-red-500 hover:text-red-600 text-xs font-medium flex items-center transition-colors"
+              >
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Remove
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Quantity & Actions -->
-        <div class="flex flex-col-reverse sm:flex-col sm:items-end justify-between w-full sm:w-auto gap-4 text-right">
+        <!-- Desktop Layout -->
+        <div class="hidden sm:block">
+          <div class="flex items-center p-6 gap-6">
+            
+            <!-- Product Image -->
+            <div class="flex-shrink-0">
+              {% if item.product.product_image %}
+                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}"
+                     class="w-24 h-24 object-cover rounded-xl shadow-sm">
+              {% else %}
+                <div class="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center rounded-xl">
+                  <svg class="w-10 h-10 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
 
-          <!-- Price & Remove -->
-          <div>
-            <div class="text-green-600 font-bold text-lg">₱{{ item.total_price }}</div>
-            <button
-              type="button"
-              onclick="showRemoveModal('{{ item.id }}')"
-              class="mt-1 text-red-600 cursor-pointer hover:underline text-sm"
-            >
-              Remove
-            </button>
+            <!-- Product Info -->
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-emerald-800 text-lg mb-2">{{ item.product.name }}</h3>
+              <div class="flex items-center gap-4 text-sm text-emerald-600">
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                  </svg>
+                  ₱{{ item.product.price }} each
+                </span>
+                <span class="flex items-center">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                  </svg>
+                  {{ item.product.quantity }} in stock
+                </span>
+              </div>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="flex items-center gap-4">
+              <form method="POST" action="{% url 'update_cart_quantity' item.id %}" class="flex items-center gap-3">
+                {% csrf_token %}
+                <label class="text-sm font-medium text-emerald-700">Quantity:</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  max="{{ item.product.quantity }}"
+                  value="{{ item.quantity }}"
+                  required
+                  class="w-20 border border-emerald-200 rounded-lg p-2 text-center focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+                <button
+                  type="submit"
+                  class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  Update
+                </button>
+              </form>
+            </div>
+
+            <!-- Price and Remove -->
+            <div class="text-right flex-shrink-0">
+              <div class="text-emerald-700 font-bold text-xl mb-2">₱{{ item.total_price }}</div>
+              <button
+                type="button"
+                onclick="showRemoveModal('{{ item.id }}')"
+                class="text-red-500 hover:text-red-600 text-sm font-medium flex items-center transition-colors"
+              >
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+                Remove
+              </button>
+            </div>
           </div>
-
-          <!-- Quantity Update Form -->
-          <form method="POST" action="{% url 'update_cart_quantity' item.id %}" class="flex justify-end gap-2">
-            {% csrf_token %}
-            <input
-              type="number"
-              name="quantity"
-              min="1"
-              max="{{ item.product.quantity }}"
-              value="{{ item.quantity }}"
-              required
-              class="w-20 border rounded p-1 text-sm text-center"
-            />
-            <button
-              type="submit"
-              class="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-            >
-              Update
-            </button>
-          </form>
         </div>
       </div>
 
-      <!-- Remove Confirmation Modal -->
+      <!-- Enhanced Remove Confirmation Modal -->
       <div id="remove-modal-{{ item.id }}"
-           class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full mx-4 text-center">
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">Remove Item</h3>
-          <p class="text-sm text-gray-600 mb-4">Are you sure you want to remove <strong>{{ item.product.name }}</strong> from your cart?</p>
-          <div class="flex justify-center gap-4">
-            <form method="POST" action="{% url 'remove_from_cart' item.id %}">
-              {% csrf_token %}
-              <button type="submit" class="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 py-2 rounded">Yes, Remove</button>
-            </form>
-            <button
-              type="button"
-              onclick="hideRemoveModal('{{ item.id }}')"
-              class="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
+           class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/20 opacity-0 pointer-events-none transition-all duration-300 p-4">
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 max-w-sm w-full text-center transition-all duration-300 ease-out scale-95 modal-content">
+          <div class="p-6">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Remove Item</h3>
+            <p class="text-gray-600 mb-6">
+              Are you sure you want to remove <strong class="text-emerald-700">{{ item.product.name }}</strong> from your cart?
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <form method="POST" action="{% url 'remove_from_cart' item.id %}" class="flex-1">
+                {% csrf_token %}
+                <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl">
+                  Yes, Remove
+                </button>
+              </form>
+              <button
+                type="button"
+                onclick="hideRemoveModal('{{ item.id }}')"
+                class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-xl transition-all duration-200"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
     {% endfor %}
   </div>
 
-  <!-- Cart Total & Checkout -->
-  <div class="mt-8 flex flex-col sm:flex-row justify-between items-center border-t pt-4 gap-4">
-    <a href="{% url 'product_listing' %}" class="text-sm text-blue-600 hover:underline">← Continue Shopping</a>
-    <div class="text-right w-full sm:w-auto">
-      <p class="text-xl font-semibold text-blue-700">Total: ₱{{ grand_total }}</p>
-      <form method="GET" action="{% url 'checkout' %}">
-        <button type="submit" class="mt-3 bg-green-600 cursor-pointer hover:bg-green-700 text-white px-6 py-2 rounded-lg w-full sm:w-auto">
-          Proceed to Checkout
-        </button>
-      </form>
+  <!-- Cart Summary -->
+  <div class="bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm p-4 sm:p-6">
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
+      
+      <!-- Continue Shopping -->
+      <a href="{% url 'product_listing' %}" class="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium transition-colors group">
+        <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Continue Shopping
+      </a>
+
+      <!-- Cart Total and Checkout -->
+      <div class="w-full lg:w-auto">
+        <div class="text-center lg:text-right mb-4">
+          <div class="text-sm text-emerald-600 mb-1">Total Amount</div>
+          <div class="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+            ₱{{ grand_total }}
+          </div>
+        </div>
+        
+        <form method="GET" action="{% url 'checkout' %}" class="w-full">
+          <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            Proceed to Checkout
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 
 {% else %}
-  <div class="text-center text-gray-500 mt-10">
-    <p class="text-lg">🛒 Your cart is empty.</p>
-    <a href="{% url 'product_listing' %}" class="mt-3 inline-block text-blue-600 hover:underline">Browse products</a>
+  <!-- Empty Cart State -->
+  <div class="text-center py-16">
+    <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <svg class="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+      </svg>
+    </div>
+    <h3 class="text-2xl font-bold text-emerald-800 mb-3">Your Cart is Empty</h3>
+    <p class="text-emerald-600 mb-8 max-w-md mx-auto">
+      Start your wellness journey by adding some premium products to your cart.
+    </p>
+    <a href="{% url 'product_listing' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+      </svg>
+      Browse Products
+    </a>
   </div>
 {% endif %}
 
-<!-- Modal Toggle Script -->
+<!-- Enhanced Modal Script -->
 <script>
   function showRemoveModal(id) {
     const modal = document.getElementById(`remove-modal-${id}`);
+    const content = modal.querySelector('.modal-content');
+    
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.classList.add('opacity-100', 'pointer-events-auto');
+    
+    setTimeout(() => {
+      content.classList.remove('scale-95');
+      content.classList.add('scale-100');
+    }, 10);
   }
 
   function hideRemoveModal(id) {
     const modal = document.getElementById(`remove-modal-${id}`);
-    modal.classList.remove('opacity-100', 'pointer-events-auto');
-    modal.classList.add('opacity-0', 'pointer-events-none');
+    const content = modal.querySelector('.modal-content');
+    
+    content.classList.remove('scale-100');
+    content.classList.add('scale-95');
+    
+    setTimeout(() => {
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }, 200);
   }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('backdrop-blur-md')) {
+      const modals = document.querySelectorAll('[id^="remove-modal-"]');
+      modals.forEach(modal => {
+        if (!modal.classList.contains('opacity-0')) {
+          const id = modal.id.replace('remove-modal-', '');
+          hideRemoveModal(id);
+        }
+      });
+    }
+  });
+
+  // Auto-submit quantity updates on change (optional)
+  document.querySelectorAll('input[name="quantity"]').forEach(input => {
+    input.addEventListener('change', function() {
+      // Optional: Auto-submit on quantity change
+      // this.form.submit();
+    });
+  });
 </script>
 
 {% endblock %}

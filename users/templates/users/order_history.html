@@ -1,56 +1,319 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="text-2xl font-bold text-[#5A827E] mb-6">Order History</h2>
 
-<form method="get" class="bg-white p-4 rounded shadow mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
-  <div>
-    <label class="block font-medium text-gray-700 mb-1">Start Date</label>
-    <input type="date" name="start_date" value="{{ start_date }}" class="w-full border px-3 py-2 rounded" />
+<!-- Header Section -->
+<div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl shadow-sm mb-8">
+  <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5"></div>
+  <div class="relative px-4 sm:px-8 py-8 sm:py-12">
+    <div class="flex items-center justify-center sm:justify-start">
+      <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl mr-4">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div class="text-center sm:text-left">
+        <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+          Order History
+        </h1>
+        <p class="text-emerald-600 text-sm sm:text-base mt-1">
+          Track your wellness journey and past purchases
+        </p>
+      </div>
+    </div>
   </div>
-  <div>
-    <label class="block font-medium text-gray-700 mb-1">End Date</label>
-    <input type="date" name="end_date" value="{{ end_date }}" class="w-full border px-3 py-2 rounded" />
-  </div>
-  <div>
-    <label class="block font-medium text-gray-700 mb-1">Min Total (₱)</label>
-    <input type="number" step="0.01" name="min_amount" value="{{ min_amount }}" class="w-full border px-3 py-2 rounded" />
-  </div>
-  
-  <div class="col-span-1 sm:col-span-3 gap-4 flex justify-end mt-2">
-    <a href="{% url 'order_history' %}" class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded">Clear</a>
+</div>
 
-    <button type="submit" class="bg-[#84AE92] hover:bg-[#5A827E] cursor-pointer text-white px-4 py-2 rounded">Filter</button>
-  </div>
-</form>
+<!-- Enhanced Filter Section -->
+<div class="bg-white/70 backdrop-blur-sm rounded-2xl border border-emerald-100 p-4 sm:p-6 mb-8 shadow-sm">
+  <form method="get" class="space-y-4">
+    
+    <!-- Mobile: Stack vertically, Desktop: Grid layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      
+      <!-- Start Date -->
+      <div>
+        <label class="block text-sm font-semibold text-emerald-800 mb-2">Start Date</label>
+        <div class="relative">
+          <input 
+            type="date" 
+            name="start_date" 
+            value="{{ start_date }}" 
+            class="w-full pl-10 pr-4 py-3 bg-white/80 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-emerald-800"
+          />
+          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+      </div>
 
+      <!-- End Date -->
+      <div>
+        <label class="block text-sm font-semibold text-emerald-800 mb-2">End Date</label>
+        <div class="relative">
+          <input 
+            type="date" 
+            name="end_date" 
+            value="{{ end_date }}" 
+            class="w-full pl-10 pr-4 py-3 bg-white/80 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-emerald-800"
+          />
+          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+      </div>
 
-<div class="space-y-4">
+      <!-- Min Amount -->
+      <div>
+        <label class="block text-sm font-semibold text-emerald-800 mb-2">Minimum Amount</label>
+        <div class="relative">
+          <input 
+            type="number" 
+            step="0.01" 
+            name="min_amount" 
+            value="{{ min_amount }}" 
+            placeholder="0.00"
+            class="w-full pl-10 pr-4 py-3 bg-white/80 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-emerald-800 placeholder-emerald-400"
+          />
+          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Filter Buttons -->
+    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-emerald-100">
+      <button type="submit" class="flex-1 sm:flex-none bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Apply Filters
+      </button>
+      <a href="{% url 'order_history' %}" class="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-3 rounded-xl transition-all duration-200 flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Clear Filters
+      </a>
+    </div>
+
+    <!-- Active Filters Display -->
+    {% if start_date or end_date or min_amount %}
+      <div class="pt-4 border-t border-emerald-100 space-y-3">
+        <span class="text-sm font-medium text-emerald-700 block">Active filters:</span>
+        <div class="flex flex-wrap gap-2">
+          {% if start_date %}
+            <span class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full">
+              From: {{ start_date }}
+              <a href="?{% if end_date %}end_date={{ end_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" class="ml-2 text-emerald-600 hover:text-emerald-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </a>
+            </span>
+          {% endif %}
+          {% if end_date %}
+            <span class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full">
+              To: {{ end_date }}
+              <a href="?{% if start_date %}start_date={{ start_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" class="ml-2 text-emerald-600 hover:text-emerald-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </a>
+            </span>
+          {% endif %}
+          {% if min_amount %}
+            <span class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full">
+              Min: ₱{{ min_amount }}
+              <a href="?{% if start_date %}start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}" class="ml-2 text-emerald-600 hover:text-emerald-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </a>
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Orders List -->
+<div class="space-y-4 sm:space-y-6 mb-8">
   {% for order in orders %}
-    <div class="p-4 bg-white rounded shadow">
-      <p class="text-sm text-gray-600">Order ID: {{ order.id }}</p>
-      <p class="text-sm text-gray-600">Date: {{ order.created_at|date:"M d, Y - h:i A" }}</p>
-      <p class="font-semibold text-gray-800">Total: ₱{{ order.total_amount }}</p>
-      <a href="{% url 'order_detail' order.id %}" class="inline-block mt-2 px-3 py-1 text-sm bg-[#84AE92] hover:bg-[#5A827E] text-white rounded">More Details</a>
+    <div class="bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+      
+      <!-- Mobile Layout -->
+      <div class="block sm:hidden">
+        <div class="p-4 space-y-3">
+          <!-- Order Header -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center mr-3">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-semibold text-emerald-800 text-sm">Order #{{ order.id }}</div>
+                <div class="text-xs text-emerald-600">{{ order.created_at|date:"M d, Y" }}</div>
+              </div>
+            </div>
+            <div class="text-right">
+              <div class="font-bold text-emerald-700 text-lg">₱{{ order.total_amount }}</div>
+            </div>
+          </div>
+
+          <!-- Order Details -->
+          <div class="flex items-center justify-between pt-3 border-t border-emerald-100">
+            <div class="text-xs text-emerald-600">
+              {{ order.created_at|date:"h:i A" }}
+            </div>
+            <a href="{% url 'order_detail' order.id %}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Layout -->
+      <div class="hidden sm:block">
+        <div class="p-6">
+          <div class="flex items-center justify-between">
+            
+            <!-- Order Info -->
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-4">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-semibold text-emerald-800 text-lg mb-1">Order #{{ order.id }}</h3>
+                <div class="flex items-center gap-4 text-sm text-emerald-600">
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {{ order.created_at|date:"M d, Y" }}
+                  </span>
+                  <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ order.created_at|date:"h:i A" }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total and Action -->
+            <div class="flex items-center gap-6">
+              <div class="text-right">
+                <div class="text-sm text-emerald-600 mb-1">Total Amount</div>
+                <div class="text-2xl font-bold text-emerald-700">₱{{ order.total_amount }}</div>
+              </div>
+              <a href="{% url 'order_detail' order.id %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.478 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                View Details
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   {% empty %}
-    <p class="text-gray-600">You have no orders yet.</p>
+    <!-- Empty State -->
+    <div class="text-center py-16">
+      <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-emerald-800 mb-3">No Orders Found</h3>
+      <p class="text-emerald-600 mb-8 max-w-md mx-auto">
+        {% if start_date or end_date or min_amount %}
+          No orders match your current filter criteria. Try adjusting your filters or clearing them to see all orders.
+        {% else %}
+          You haven't placed any orders yet. Start your wellness journey by browsing our premium products.
+        {% endif %}
+      </p>
+      {% if start_date or end_date or min_amount %}
+        <a href="{% url 'order_history' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 mr-4">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Clear Filters
+        </a>
+      {% endif %}
+      <a href="{% url 'product_listing' %}" class="inline-flex items-center px-6 py-3 bg-white border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 font-semibold rounded-xl transition-all duration-200">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        Browse Products
+      </a>
+    </div>
   {% endfor %}
 </div>
 
-<!-- Pagination Controls -->
+<!-- Enhanced Pagination -->
 {% if orders.has_other_pages %}
-  <div class="mt-6 flex justify-center items-center space-x-2 text-sm">
-    {% if orders.has_previous %}
-      <a href="?page=1" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">&laquo; First</a>
-      <a href="?page={{ orders.previous_page_number }}" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">Previous</a>
-    {% endif %}
+  <div class="bg-white/70 backdrop-blur-sm rounded-2xl border border-emerald-100 p-4 sm:p-6 shadow-sm">
+    <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+      
+      <!-- Page Info -->
+      <div class="text-xs sm:text-sm text-emerald-700 text-center sm:text-left">
+        Showing page {{ orders.number }} of {{ orders.paginator.num_pages }}
+        <span class="block sm:inline">
+          ({{ orders.paginator.count }} total orders)
+        </span>
+      </div>
 
-    <span class="px-3 py-1 bg-gray-100 border rounded">Page {{ orders.number }} of {{ orders.paginator.num_pages }}</span>
+      <!-- Pagination Controls -->
+      <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+        {% if orders.has_previous %}
+          <a href="?page=1{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" 
+             class="px-2 sm:px-3 py-2 bg-white border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors text-xs sm:text-sm font-medium">
+            First
+          </a>
+          <a href="?page={{ orders.previous_page_number }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" 
+             class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium flex items-center">
+            <svg class="w-3 sm:w-4 h-3 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span class="hidden sm:inline">Previous</span>
+            <span class="sm:hidden">Prev</span>
+          </a>
+        {% endif %}
 
-    {% if orders.has_next %}
-      <a href="?page={{ orders.next_page_number }}" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">Next</a>
-      <a href="?page={{ orders.paginator.num_pages }}" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">Last &raquo;</a>
-    {% endif %}
+        <span class="px-3 sm:px-4 py-2 bg-emerald-100 text-emerald-800 rounded-lg text-xs sm:text-sm font-medium">
+          {{ orders.number }}
+        </span>
+
+        {% if orders.has_next %}
+          <a href="?page={{ orders.next_page_number }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" 
+             class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium flex items-center">
+            <span class="hidden sm:inline">Next</span>
+            <span class="sm:hidden">Next</span>
+            <svg class="w-3 sm:w-4 h-3 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="?page={{ orders.paginator.num_pages }}{% if start_date %}&start_date={{ start_date }}{% endif %}{% if end_date %}&end_date={{ end_date }}{% endif %}{% if min_amount %}&min_amount={{ min_amount }}{% endif %}" 
+             class="px-2 sm:px-3 py-2 bg-white border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors text-xs sm:text-sm font-medium">
+            Last
+          </a>
+        {% endif %}
+      </div>
+    </div>
   </div>
 {% endif %}
+
 {% endblock %}

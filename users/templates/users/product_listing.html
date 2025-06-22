@@ -2,161 +2,421 @@
 {% block content %}
 {% load dict_filters %}
 
-<!-- Header -->
-<div class="text-center py-10">
-  <h1 class="text-3xl font-bold text-gray-800">All Products</h1>
-  <p class="text-gray-600 mt-2">Browse through our complete catalog</p>
+<!-- Header Section -->
+<div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl shadow-sm mb-8">
+  <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5"></div>
+  <div class="relative px-4 sm:px-8 py-8 sm:py-12 text-center">
+    <div class="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl mb-4">
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent mb-3">
+      Wellness Products
+    </h1>
+    <p class="text-sm sm:text-base text-emerald-600 max-w-2xl mx-auto px-4">
+      Discover our complete collection of premium wellness products crafted for your health and happiness
+    </p>
+  </div>
 </div>
 
-<!-- Filter/Search Bar -->
-<form method="get" class="flex flex-wrap justify-center gap-2 mb-6">
-  <!-- Product Type Filter -->
-  <select name="type" class="border rounded px-3 py-2">
-    <option value="">All Types</option>
-    {% for type in all_types %}
-      <option value="{{ type }}" {% if type == selected_type %}selected{% endif %}>{{ type|capfirst }}</option>
-    {% endfor %}
-  </select>
+<!-- Enhanced Filter/Search Section - Mobile Optimized -->
+<div class="bg-white/70 backdrop-blur-sm rounded-2xl border border-emerald-100 p-4 sm:p-6 mb-8 shadow-sm">
+  <form method="get" class="space-y-4">
+    
+    <!-- Mobile: Stack vertically, Desktop: Side by side -->
+    <div class="space-y-4 lg:space-y-0 lg:flex lg:gap-4 lg:items-end">
+      
+      <!-- Search Bar -->
+      <div class="flex-1">
+        <label class="block text-sm font-semibold text-emerald-800 mb-2">Search Products</label>
+        <div class="relative">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search by product name..."
+            value="{{ query }}"
+            class="w-full pl-10 pr-4 py-3 bg-white/80 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-emerald-800 placeholder-emerald-400 text-sm sm:text-base"
+          />
+          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </div>
+      </div>
 
-  <!-- Search Bar -->
-  <input
-    type="text"
-    name="q"
-    placeholder="Search product name..."
-    value="{{ query }}"
-    class="border rounded px-3 py-2"
-  />
+      <!-- Product Type Filter -->
+      <div class="w-full lg:w-64">
+        <label class="block text-sm font-semibold text-emerald-800 mb-2">Category</label>
+        <div class="relative">
+          <select name="type" class="w-full appearance-none bg-white/80 border border-emerald-200 rounded-xl px-4 py-3 pr-10 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 text-emerald-800 text-sm sm:text-base">
+            <option value="">All Categories</option>
+            {% for type in all_types %}
+              <option value="{{ type }}" {% if type == selected_type %}selected{% endif %}>{{ type|capfirst }}</option>
+            {% endfor %}
+          </select>
+          <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-emerald-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
 
-  <!-- Submit Button -->
-  <button type="submit" class="bg-[#5A827E] cursor-pointer text-white px-4 py-2 rounded hover:bg-[#46665f]">
-    Filter
-  </button>
-</form>
+      <!-- Filter Button -->
+      <button type="submit" class="w-full lg:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center text-sm sm:text-base">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+        </svg>
+        Apply Filters
+      </button>
+    </div>
+
+    <!-- Active Filters Display - Mobile Optimized -->
+    {% if selected_type or query %}
+      <div class="pt-4 border-t border-emerald-100 space-y-3">
+        <span class="text-sm font-medium text-emerald-700 block">Active filters:</span>
+        
+        <!-- Mobile: Stack filters vertically, Desktop: Horizontal -->
+        <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2">
+          {% if query %}
+            <div class="inline-flex items-center justify-between sm:justify-start px-3 py-2 bg-emerald-100 text-emerald-800 text-sm rounded-full">
+              <span class="mr-2">Search: "{{ query|truncatechars:20 }}"</span>
+              <a href="?{% if selected_type %}type={{ selected_type }}{% endif %}" class="text-emerald-600 hover:text-emerald-800 flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </a>
+            </div>
+          {% endif %}
+          {% if selected_type %}
+            <div class="inline-flex items-center justify-between sm:justify-start px-3 py-2 bg-emerald-100 text-emerald-800 text-sm rounded-full">
+              <span class="mr-2">Category: {{ selected_type|capfirst }}</span>
+              <a href="?{% if query %}q={{ query }}{% endif %}" class="text-emerald-600 hover:text-emerald-800 flex-shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </a>
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Clear All Link -->
+        <div class="pt-2">
+          <a href="{% url 'product_listing' %}" class="text-sm text-emerald-600 hover:text-emerald-800 underline inline-flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Clear all filters
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Results Summary - Mobile Optimized -->
+{% if products %}
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6 px-1">
+    <p class="text-emerald-700 font-medium text-sm sm:text-base">
+      Showing {{ products|length }} of {{ products.paginator.count }} products
+      {% if selected_type or query %}
+        <span class="block sm:inline mt-1 sm:mt-0">
+          {% if selected_type and query %}
+            for "{{ query|truncatechars:15 }}" in {{ selected_type|capfirst }}
+          {% elif query %}
+            for "{{ query|truncatechars:20 }}"
+          {% elif selected_type %}
+            in {{ selected_type|capfirst }}
+          {% endif %}
+        </span>
+      {% endif %}
+    </p>
+    <div class="text-xs sm:text-sm text-emerald-600">
+      Page {{ products.number }} of {{ products.paginator.num_pages }}
+    </div>
+  </div>
+{% endif %}
 
 <!-- Product Grid -->
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-12">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 mb-12">
   {% for product in products %}
     <div 
-      class="bg-white border rounded-lg shadow hover:shadow-md transition text-sm cursor-pointer"
+      class="group bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
       onclick="openModal('{{ product.id }}')"
     >
-      <div class="overflow-hidden rounded-t-lg">
+      <div class="relative overflow-hidden rounded-t-2xl">
         {% if product.product_image %}
           <img src="{{ product.product_image.url }}" alt="{{ product.name }}"
-               class="aspect-square w-full object-cover rounded-t-lg">
+               class="aspect-square w-full object-cover group-hover:scale-105 transition-transform duration-300">
         {% else %}
-          <div class="aspect-square bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+          <div class="aspect-square bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center">
+            <svg class="w-8 sm:w-12 h-8 sm:h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
         {% endif %}
+        
+        <!-- Stock Status Badge -->
+        <div class="absolute top-2 sm:top-3 left-2 sm:left-3">
+          {% if product.quantity > 10 %}
+            <span class="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full font-medium">In Stock</span>
+          {% elif product.quantity > 0 %}
+            <span class="bg-amber-500 text-white text-xs px-2 py-1 rounded-full font-medium">Low Stock</span>
+          {% else %}
+            <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">Out of Stock</span>
+          {% endif %}
+        </div>
+
+        <!-- Wishlist Icon -->
+        <div class="absolute top-2 sm:top-3 right-2 sm:right-3">
+          <div class="bg-white/90 backdrop-blur-sm rounded-full p-1.5 sm:p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <svg class="w-3 sm:w-4 h-3 sm:h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+          </div>
+        </div>
       </div>
-      <div class="p-3">
-        <h3 class="font-semibold truncate text-gray-800">{{ product.name }}</h3>
-        <p class="text-xs text-gray-500 truncate">{{ product.product_type|capfirst }}</p>
-        <p class="text-green-600 font-bold text-sm mt-1">₱{{ product.price }}</p>
+      
+      <div class="p-3 sm:p-4">
+        <h3 class="font-semibold text-emerald-800 truncate mb-1 group-hover:text-emerald-900 transition-colors text-sm sm:text-base">{{ product.name }}</h3>
+        <p class="text-xs text-emerald-600 truncate mb-2 flex items-center">
+          <svg class="w-3 h-3 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+          </svg>
+          <span class="truncate">{{ product.product_type|capfirst }}</span>
+        </p>
+        <div class="flex items-center justify-between">
+          <p class="text-emerald-700 font-bold text-sm sm:text-lg">₱{{ product.price }}</p>
+          <div class="bg-emerald-50 text-emerald-700 text-xs px-2 py-1 rounded-full flex-shrink-0">
+            {{ product.quantity }} left
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Enhanced Modal - Mobile Optimized -->
     <div 
       id="modal-{{ product.id }}" 
-      class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 backdrop-blur-md bg-black/20 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300 p-4"
     >
-      <div class="relative w-11/12 max-w-md p-6 rounded-2xl bg-white shadow-xl ring-1 ring-gray-300/40 transition-all duration-300 ease-out scale-100 opacity-100">
+      <div class="relative w-full max-w-lg bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-emerald-100 transition-all duration-300 ease-out scale-95 opacity-0 modal-content max-h-[90vh] overflow-y-auto">
+        
+        <!-- Close Button -->
+        <button 
+          onclick="closeModal('{{ product.id }}')"
+          class="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-colors"
+        >
+          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+
         {% if product.product_image %}
-          <div class="w-full mb-4">
-            <img src="{{ product.product_image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover rounded-md shadow" />
+          <div class="w-full mb-4 sm:mb-6">
+            <img src="{{ product.product_image.url }}" alt="{{ product.name }}" 
+                 class="w-full h-48 sm:h-64 object-cover rounded-t-3xl" />
           </div>
         {% endif %}
 
-        <h2 class="text-lg font-bold mb-2">{{ product.name }}</h2>
-        <p class="text-sm text-gray-600 mb-1">Type: {{ product.product_type|capfirst }}</p>
-        <p class="text-sm text-gray-600 mb-1">Description: {{ product.description|default:"No description." }}</p>
-        <p class="text-sm text-gray-600 mb-1">Price: ₱{{ product.price }}</p>
-        <p class="text-sm text-gray-600 mb-3">Stock Left: {{ product.quantity }}</p>
-
-        <form method="POST" action="{% url 'add_to_cart' product.id %}">
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ request.get_full_path }}">
-
-          <div>
-            <p id="warning-{{ product.id }}" class="text-red-600 text-sm mb-2 hidden">
-              Quantity exceeds available stock.
-            </p>
-            <input
-              type="number"
-              name="quantity"
-              min="1"
-              required
-              class="w-full border p-2 rounded"
-              placeholder="Enter quantity"
-              oninput="validateQuantity(this, {{ product.quantity }}, {{ cart_quantities|get_item:product.id|default:0 }}, '{{ product.id }}')"
-            />
+        <div class="px-4 sm:px-6 pb-4 sm:pb-6">
+          <div class="mb-4 sm:mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-emerald-800 mb-2">{{ product.name }}</h2>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-emerald-600 mb-3">
+              <span class="flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                {{ product.product_type|capfirst }}
+              </span>
+              <span class="flex items-center">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+                {{ product.quantity }} in stock
+              </span>
+            </div>
+            <p class="text-gray-700 mb-4 text-sm sm:text-base">{{ product.description|default:"Premium wellness product crafted for your health and well-being." }}</p>
+            <div class="text-2xl sm:text-3xl font-bold text-emerald-700 mb-4 sm:mb-6">₱{{ product.price }}</div>
           </div>
 
-          {% if error_product_id == product.id %}
-            <p class="text-sm text-red-600 mt-1">{{ error_message }}</p>
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
-                openModal('{{ product.id }}');
-              });
-            </script>
-          {% endif %}
+          <form method="POST" action="{% url 'add_to_cart' product.id %}" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}">
 
-          <button
-            type="submit"
-            class="mt-3 bg-[#5A827E] cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-[#46665f] w-full transition"
-          >
-            Add to Cart
-          </button>
+            <div>
+              <label class="block text-sm font-semibold text-emerald-800 mb-2">Quantity</label>
+              <p id="warning-{{ product.id }}" class="text-red-600 text-sm mb-2 hidden flex items-center">
+                <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <span>Quantity exceeds available stock.</span>
+              </p>
+              <input
+                type="number"
+                name="quantity"
+                min="1"
+                max="{{ product.quantity }}"
+                required
+                class="w-full border border-emerald-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 p-3 rounded-xl bg-white/80 backdrop-blur-sm transition-all duration-200 text-sm sm:text-base"
+                placeholder="Enter quantity"
+                oninput="validateQuantity(this, {{ product.quantity }}, {{ cart_quantities|get_item:product.id|default:0 }}, '{{ product.id }}')"
+              />
+            </div>
 
-          <button
-            type="button"
-            onclick="closeModal('{{ product.id }}')"
-            class="mt-2 bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg w-full transition"
-          >
-            Return
-          </button>
+            {% if error_product_id == product.id %}
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start">
+                <svg class="w-5 h-5 text-red-500 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <p class="text-sm text-red-700">{{ error_message }}</p>
+              </div>
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  openModal('{{ product.id }}');
+                });
+              </script>
+            {% endif %}
 
-        </form>
+            <div class="flex flex-col sm:flex-row gap-3">
+              {% if product.quantity > 0 %}
+                <button
+                  type="submit"
+                  class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center text-sm sm:text-base"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+                  </svg>
+                  Add to Cart
+                </button>
+              {% else %}
+                <button
+                  type="button"
+                  disabled
+                  class="flex-1 bg-gray-300 text-gray-500 font-semibold py-3 px-6 rounded-xl cursor-not-allowed flex items-center justify-center text-sm sm:text-base"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"/>
+                  </svg>
+                  Out of Stock
+                </button>
+              {% endif %}
+              <button
+                type="button"
+                onclick="closeModal('{{ product.id }}')"
+                class="w-full sm:w-auto px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 text-sm sm:text-base"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
   {% empty %}
-    <p class="col-span-full text-center text-gray-500 italic">No products available at the moment.</p>
+    <div class="col-span-full text-center py-12 sm:py-16">
+      <div class="w-16 sm:w-20 h-16 sm:h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+        <svg class="w-8 sm:w-10 h-8 sm:h-10 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <h3 class="text-lg sm:text-xl font-semibold text-emerald-800 mb-2">No Products Found</h3>
+      <p class="text-emerald-600 mb-4 sm:mb-6 text-sm sm:text-base px-4">
+        {% if selected_type or query %}
+          We couldn't find any products matching your search criteria.
+        {% else %}
+          No products are available at the moment.
+        {% endif %}
+      </p>
+      {% if selected_type or query %}
+        <a href="{% url 'product_listing' %}" class="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl text-sm sm:text-base">
+          <svg class="w-4 sm:w-5 h-4 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          View All Products
+        </a>
+      {% endif %}
+    </div>
   {% endfor %}
 </div>
-<!-- Pagination Controls -->
-<div class="flex justify-center items-center space-x-2 mb-10">
-  {% if products.has_previous %}
-    <a href="?page={{ products.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
-       class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-      Previous
-    </a>
-  {% endif %}
 
-  <span class="px-4 py-1 bg-gray-100 text-gray-800 rounded">
-    Page {{ products.number }} of {{ products.paginator.num_pages }}
-  </span>
+<!-- Enhanced Pagination - Mobile Optimized -->
+{% if products.paginator.num_pages > 1 %}
+  <div class="bg-white/70 backdrop-blur-sm rounded-2xl border border-emerald-100 p-4 sm:p-6 shadow-sm">
+    <div class="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
+      
+      <!-- Page Info -->
+      <div class="text-xs sm:text-sm text-emerald-700 text-center sm:text-left">
+        Showing page {{ products.number }} of {{ products.paginator.num_pages }}
+        <span class="block sm:inline">
+          ({{ products.paginator.count }} total products)
+        </span>
+      </div>
 
-  {% if products.has_next %}
-    <a href="?page={{ products.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
-       class="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-      Next
-    </a>
-  {% endif %}
-</div>
+      <!-- Pagination Controls -->
+      <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+        {% if products.has_previous %}
+          <a href="?page=1{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+             class="px-2 sm:px-3 py-2 bg-white border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors text-xs sm:text-sm font-medium">
+            First
+          </a>
+          <a href="?page={{ products.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+             class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium flex items-center">
+            <svg class="w-3 sm:w-4 h-3 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span class="hidden sm:inline">Previous</span>
+            <span class="sm:hidden">Prev</span>
+          </a>
+        {% endif %}
 
-<!-- JavaScript -->
+        <span class="px-3 sm:px-4 py-2 bg-emerald-100 text-emerald-800 rounded-lg text-xs sm:text-sm font-medium">
+          {{ products.number }}
+        </span>
+
+        {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+             class="px-3 sm:px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium flex items-center">
+            <span class="hidden sm:inline">Next</span>
+            <span class="sm:hidden">Next</span>
+            <svg class="w-3 sm:w-4 h-3 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="?page={{ products.paginator.num_pages }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if query %}&q={{ query }}{% endif %}" 
+             class="px-2 sm:px-3 py-2 bg-white border border-emerald-200 text-emerald-700 rounded-lg hover:bg-emerald-50 transition-colors text-xs sm:text-sm font-medium">
+            Last
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<!-- Enhanced JavaScript -->
 <script>
   function openModal(id) {
     const modal = document.getElementById(`modal-${id}`);
+    const content = modal.querySelector('.modal-content');
+    
     modal.classList.remove('opacity-0', 'pointer-events-none');
     modal.classList.add('opacity-100', 'pointer-events-auto');
+    
+    setTimeout(() => {
+      content.classList.remove('scale-95', 'opacity-0');
+      content.classList.add('scale-100', 'opacity-100');
+    }, 10);
   }
 
   function closeModal(id) {
     const modal = document.getElementById(`modal-${id}`);
-    modal.classList.remove('opacity-100', 'pointer-events-auto');
-    modal.classList.add('opacity-0', 'pointer-events-none');
+    const content = modal.querySelector('.modal-content');
+    
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }, 200);
   }
 
   function validateQuantity(input, maxQty, existingQty, productId) {
@@ -175,6 +435,24 @@
       input.setCustomValidity("");
     }
   }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('backdrop-blur-md')) {
+      const modals = document.querySelectorAll('[id^="modal-"]');
+      modals.forEach(modal => {
+        if (!modal.classList.contains('opacity-0')) {
+          const id = modal.id.replace('modal-', '');
+          closeModal(id);
+        }
+      });
+    }
+  });
+
+  // Auto-submit form on filter change (optional)
+  document.querySelector('select[name="type"]').addEventListener('change', function() {
+    this.form.submit();
+  });
 </script>
 
 {% endblock %}

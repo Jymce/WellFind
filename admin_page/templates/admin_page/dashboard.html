@@ -1,37 +1,91 @@
-{% extends "base.html" %}
-
+{% extends 'base.html' %}
 {% block content %}
-<div class="text-center mb-8">
-  <h1 class="text-3xl font-bold text-[#5A827E]">Welcome to the Admin Dashboard</h1>
-  <p class="text-gray-600 mt-2">Manage your store efficiently</p>
+
+<!-- Enhanced Admin Dashboard Header -->
+<div class="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-2xl shadow-sm mb-8">
+  <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-teal-500/5"></div>
+  <div class="relative px-4 sm:px-8 py-8 sm:py-12">
+    <div class="flex flex-col sm:flex-row items-center justify-between">
+      <div class="text-center sm:text-left mb-4 sm:mb-0">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent mb-2">
+          Admin Dashboard
+        </h1>
+        <p class="text-emerald-600 text-lg">Manage your wellness store efficiently</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<!-- Main Management Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  
   <!-- Manage Orders -->
-  <a href="{% url 'completed_orders' %}" class="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition group">
-    <div class="text-[#5A827E] text-4xl mb-3">
-      🧾
+  <a href="{% url 'completed_orders' %}" class="group bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 transform hover:-translate-y-1">
+    <div class="flex items-center mb-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-emerald-800 group-hover:text-emerald-900 transition-colors">Manage Orders</h2>
+      </div>
     </div>
-    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Orders</h2>
-    <p class="text-sm text-gray-500 mt-1">View and process customer orders.</p>
+    <p class="text-emerald-600 text-sm mb-4">View and process customer orders efficiently</p>
+    <div class="flex items-center text-emerald-600 group-hover:text-emerald-700 transition-colors">
+      <span class="text-sm font-medium">Manage Orders</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </div>
   </a>
 
   <!-- Manage Products -->
-  <a href="{% url 'product_list' %}"  class="bg-white shadow-md rounded-xl p-6 hover:shadow-lg transition group">
-    <div class="text-[#5A827E] text-4xl mb-3">
-      📦
+  <a href="{% url 'product_list' %}" class="group bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 transform hover:-translate-y-1">
+    <div class="flex items-center mb-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-emerald-800 group-hover:text-emerald-900 transition-colors">Manage Products</h2>
+      </div>
     </div>
-    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Products</h2>
-    <p class="text-sm text-gray-500 mt-1">Add, edit, or remove store products.</p>
+    <p class="text-emerald-600 text-sm mb-4">Add, edit, or remove wellness products from your store</p>
+    <div class="flex items-center text-emerald-600 group-hover:text-emerald-700 transition-colors">
+      <span class="text-sm font-medium">Manage Products</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </div>
   </a>
 
   <!-- Manage Users -->
-  <a href="{% url 'manage_users' %}" class="bg-white shadow-md rounded-xl cursor-pointer p-6 hover:shadow-lg transition group">
-    <div class="text-[#5A827E] text-4xl mb-3">
-      👥
+  <a href="{% url 'manage_users' %}" class="group bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-6 transform hover:-translate-y-1">
+    <div class="flex items-center mb-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-emerald-800 group-hover:text-emerald-900 transition-colors">Manage Users</h2>
+      </div>
     </div>
-    <h2 class="text-lg font-semibold text-[#5A827E] group-hover:underline">Manage Users</h2>
-    <p class="text-sm text-gray-500 mt-1">View and manage user accounts.</p>
+    <p class="text-emerald-600 text-sm mb-4">View and manage customer accounts and permissions</p>
+    <div class="flex items-center text-emerald-600 group-hover:text-emerald-700 transition-colors">
+      <span class="text-sm font-medium">Manage Users</span>
+      <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </div>
   </a>
 </div>
+
 {% endblock %}
