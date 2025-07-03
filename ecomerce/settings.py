@@ -25,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bqs2=bn%##g$ytmqrub&ah+&k+)-ai)@7b@j(s@23gu7+@umwp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
+DEBUG = False
 
-# ALLOWED_HOSTS = ['fureverstore.pythonanywhere.com']
+ALLOWED_HOSTS = ['WellFindEcom.pythonanywhere.com']
 
-DEBUG = True
-ALLOWED_HOSTS = []
+# DEBUG = True
+# ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
