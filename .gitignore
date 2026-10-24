@@ -35,3 +35,9 @@ ENV/
 # pip tools
 pip-wheel-metadata/
 *.egg-info/
+
+# Collected static files
+staticfiles/
+
+# Node
+node_modules/

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,15 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bqs2=bn%##g$ytmqrub&ah+&k+)-ai)@7b@j(s@23gu7+@umwp'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['WellFindEcom.pythonanywhere.com']
-
-# DEBUG = True
-# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tailwind',
     'theme',
-    'django_browser_reload',
     'widget_tweaks',
 
     # apps
@@ -50,6 +46,9 @@ INSTALLED_APPS = [
     'admin_page',
     'products',
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ['django_browser_reload']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -59,8 +58,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
 
 ROOT_URLCONF = 'ecomerce.urls'
 
@@ -147,7 +148,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TAILWIND_APP_NAME = 'theme'
 
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+# Only needed for local Tailwind rebuilds (python manage.py tailwind ...)
+if os.name == 'nt':
+    NPM_BIN_PATH = config('NPM_BIN_PATH', default=r"C:\Program Files\nodejs\npm.cmd")
 
 LOGIN_URL = '/login/'
 
@@ -157,10 +160,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = f"FurEver Support <{config('EMAIL_HOST_USER')}>"
-PAYPAL_SANDBOX_CLIENT_ID = config('PAYPAL_SANDBOX_CLIENT_ID')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = f"WellFind Support <{EMAIL_HOST_USER or 'noreply@example.com'}>"
+PAYPAL_SANDBOX_CLIENT_ID = config('PAYPAL_SANDBOX_CLIENT_ID', default='')
 
 TIME_ZONE = 'Asia/Manila'
 USE_TZ = True  # Keep this True unless you know why you're disabling it
