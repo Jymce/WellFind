@@ -231,6 +231,8 @@ def remove_from_cart(request, item_id):
 @login_required
 def checkout_view(request):
     cart_items = CartItem.objects.filter(user=request.user)
+    if not cart_items.exists():
+        return redirect('cart')
     grand_total = sum(item.product.price * item.quantity for item in cart_items)
 
     try:

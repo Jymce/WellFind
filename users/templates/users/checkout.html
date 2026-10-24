@@ -230,7 +230,8 @@
       return actions.order.create({
         purchase_units: [{
           amount: {
-            value: '{{ grand_total|floatformat:2 }}'
+            value: '{{ grand_total|floatformat:2 }}',
+            currency_code: 'PHP'
           }
         }]
       });
