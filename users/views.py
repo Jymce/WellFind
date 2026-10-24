@@ -82,14 +82,15 @@ def login_view(request):
 
     return render(request, 'users/login.html')
 
-@login_required
 def home_view(request):
     featured_products = Product.objects.filter(is_featured=True)[:8]
     categories = Product.objects.values_list('product_type', flat=True).distinct()
 
     # Create dictionary of current cart quantities per product
-    cart_items = CartItem.objects.filter(user=request.user)
-    cart_quantities = {item.product.id: item.quantity for item in cart_items}
+    cart_quantities = {}
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(user=request.user)
+        cart_quantities = {item.product.id: item.quantity for item in cart_items}
 
     return render(request, 'users/home.html', {
         'featured_products': featured_products,
@@ -182,7 +183,6 @@ def cart_view(request):
         'grand_total': grand_total,
     })
 
-@login_required
 def product_listing_view(request):
     query = request.GET.get('q', '')
     selected_type = request.GET.get('type', '')
@@ -199,8 +199,10 @@ def product_listing_view(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    cart_items = CartItem.objects.filter(user=request.user)
-    cart_quantities = {item.product.id: item.quantity for item in cart_items}
+    cart_quantities = {}
+    if request.user.is_authenticated:
+        cart_items = CartItem.objects.filter(user=request.user)
+        cart_quantities = {item.product.id: item.quantity for item in cart_items}
 
 
     context = {
@@ -293,7 +295,6 @@ def payment_success(request):
         item.product.save()
 
     cart_items.delete()
-    print("🚀 Reached payment_success")
 
     return render(request, 'users/payment_success.html', {'order': order})
 
@@ -319,7 +320,6 @@ def order_history(request):
     paginator = Paginator(orders, 5)
     page_number = request.GET.get('page')
     paginated_orders = paginator.get_page(page_number)
-    print("Orders for user:", Order.objects.filter(user=request.user))
 
     return render(request, 'users/order_history.html', {
         'orders': paginated_orders,

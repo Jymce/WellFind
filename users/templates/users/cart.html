@@ -215,27 +215,19 @@
 
   <!-- Cart Summary -->
   <div class="bg-white/70 backdrop-blur-sm border border-emerald-100 rounded-2xl shadow-sm p-4 sm:p-6">
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
-      
-      <!-- Continue Shopping -->
-      <a href="{% url 'product_listing' %}" class="inline-flex items-center text-emerald-600 hover:text-emerald-700 font-medium transition-colors group">
-        <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-        </svg>
-        Continue Shopping
-      </a>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-end gap-4 sm:gap-6">
 
       <!-- Cart Total and Checkout -->
-      <div class="w-full lg:w-auto">
-        <div class="text-center lg:text-right mb-4">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 w-full sm:w-auto">
+        <div class="text-center sm:text-right">
           <div class="text-sm text-emerald-600 mb-1">Total Amount</div>
-          <div class="text-3xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
+          <div class="text-2xl font-bold bg-gradient-to-r from-emerald-700 to-teal-700 bg-clip-text text-transparent">
             ₱{{ grand_total }}
           </div>
         </div>
         
-        <form method="GET" action="{% url 'checkout' %}" class="w-full">
-          <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+        <form method="GET" action="{% url 'checkout' %}" class="w-full sm:w-auto">
+          <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
             </svg>

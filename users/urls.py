@@ -6,10 +6,10 @@ from .views import CustomPasswordResetView
 from .forms import CustomSetPasswordForm,CustomPasswordResetForm
 
 urlpatterns = [
-    path('', views.login_view, name='login'),
+    path('', views.home_view, name='home'),
+    path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
-    path('home/', views.home_view, name='home'),
     path('cart/', views.cart_view, name='cart'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),  # This line fixes the error
     path('products_listing/', views.product_listing_view, name='product_listing'),

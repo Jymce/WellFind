@@ -156,12 +156,19 @@ LOGIN_URL = '/login/'
 
 
 # settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+else:
+    # No Gmail credentials configured — print emails to the console instead
+    # of crashing on send (e.g. local dev / demo without SMTP set up)
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 DEFAULT_FROM_EMAIL = f"WellFind Support <{EMAIL_HOST_USER or 'noreply@example.com'}>"
 PAYPAL_SANDBOX_CLIENT_ID = config('PAYPAL_SANDBOX_CLIENT_ID', default='')
 
