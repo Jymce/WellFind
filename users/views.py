@@ -16,6 +16,9 @@ from django.conf import  settings
 
 
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('admin_dashboard' if request.user.is_superuser else 'home')
+
     context = {}
 
     if request.method == 'POST':
@@ -48,6 +51,9 @@ def register_view(request):
     return render(request, 'users/register.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('admin_dashboard' if request.user.is_superuser else 'home')
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
